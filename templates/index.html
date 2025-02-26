@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jogo de Anagramas</title>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script>
+        function verificarResposta(event) {
+            event.preventDefault();  // Impede o envio tradicional do formulário
+            
+            const resposta = document.getElementById("resposta").value;
+            
+            axios.post("/verificar", {
+                resposta: resposta,
+            })
+            .then(response => {
+                alert(response.data.resultado);
+                if (response.data.resultado === 'Correto!') {
+                    document.getElementById("nova_palavra").innerHTML = 'Você adivinhou a palavra correta: ' + response.data.nova_palavra;
+                } else {
+                    document.getElementById("nova_palavra").innerHTML = 'Tente novamente!';
+                }
+            });
+        }
+    </script>
+</head>
+<body class="bg-gray-100 p-10">
+    <div class="text-center">
+        <h1 class="text-2xl font-bold">MISTURADO</h1>
+        <p class="text-3xl font-semibold mb-4">Palavra embaralhada: {{ palavra_embaralhada }}</p>
+        
+        <!-- Formulário para o usuário tentar adivinhar a palavra -->
+        <form action="/verificar" method="POST">
+            <label for="resposta">Qual é a palavra original?</label>
+            <input type="text" id="resposta" name="resposta" required>
+            <button type="submit">Verificar</button>
+        </form>
+
+        <p id="nova_palavra" class="mt-4"></p>
+    </div>
+</body>
+</html>
